@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://conanwang.github.io</id>
     <title>小白修电脑</title>
-    <updated>2021-12-21T10:46:10.232Z</updated>
+    <updated>2021-12-21T10:46:46.248Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://conanwang.github.io"/>
     <link rel="self" href="https://conanwang.github.io/atom.xml"/>
@@ -17,7 +17,7 @@
         </link>
         <updated>2021-12-21T08:21:25.000Z</updated>
         <content type="html"><![CDATA[<h2 id="前言">前言</h2>
-<p>    最近在做一些mydumper的需求，写下这个系列文章全当学习记录。</p>
+<p>  最近在做一些mydumper的需求，写下这个系列文章全当学习记录。</p>
 <h2 id="背景">背景</h2>
 <p>p{ white-space:pre-wrap;}近期在工作中，发现mydumper出来的一份全量数据，用来做备机数据，建立主从关系后，备机总是发生“1032”找不到数据行的错误，不由让我怀疑难道备份出来的数据和源db是不一致的吗？</p>
 <h2 id="mydumper当前备份逻辑说明">mydumper当前备份逻辑说明</h2>

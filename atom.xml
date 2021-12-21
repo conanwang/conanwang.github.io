@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://conanwang.github.io</id>
     <title>小白修电脑</title>
-    <updated>2021-12-21T10:46:46.248Z</updated>
+    <updated>2021-12-21T10:49:35.040Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://conanwang.github.io"/>
     <link rel="self" href="https://conanwang.github.io/atom.xml"/>
@@ -19,9 +19,9 @@
         <content type="html"><![CDATA[<h2 id="前言">前言</h2>
 <p>  最近在做一些mydumper的需求，写下这个系列文章全当学习记录。</p>
 <h2 id="背景">背景</h2>
-<p>p{ white-space:pre-wrap;}近期在工作中，发现mydumper出来的一份全量数据，用来做备机数据，建立主从关系后，备机总是发生“1032”找不到数据行的错误，不由让我怀疑难道备份出来的数据和源db是不一致的吗？</p>
+<p>  近期在工作中，发现mydumper出来的一份全量数据，用来做备机数据，建立主从关系后，备机总是发生“1032”找不到数据行的错误，不由让我怀疑难道备份出来的数据和源db是不一致的吗？</p>
 <h2 id="mydumper当前备份逻辑说明">mydumper当前备份逻辑说明</h2>
-<p>p{ white-space:pre-wrap;}mydumper当前备份逻辑流程如下：<br>
+<p>  mydumper当前备份逻辑流程如下：<br>
 <img src="https://conanwang.github.io/post-images/1640080061444.png" alt="" loading="lazy"><br>
 <strong>主要步骤概括</strong></p>
 <ul>
@@ -34,11 +34,11 @@
 <li>事务结束</li>
 </ul>
 <h2 id="flush-tables-with-read-lock如果执行失败会怎么样">flush tables with read lock如果执行失败会怎么样？</h2>
-<p>p{ white-space:pre-wrap;}通过上述的备份步骤，我们可以知道，&quot;FLUSH TABLES WITH READ LOCK&quot; 获取全局只读锁是为了防止其他会话修改数据，这样才能获取一致性的同步位点。那么问题来了，如果获取全局锁失败失败会怎么样？<br>
-​p{ white-space:pre-wrap;}想象一下，当获取全局锁失败的情况下，这个时候其他会话对数据库继续进行读写，此时，如果mydumper继续通过&quot;show master status&quot; 获取备份同步点，这个同步点肯定是不一致的，用这个备份来做备机建立主从关系，在日后的同步过程中必然会由于1032，1062之类的错误导致同步中断.</p>
+<p>  通过上述的备份步骤，我们可以知道，&quot;FLUSH TABLES WITH READ LOCK&quot; 获取全局只读锁是为了防止其他会话修改数据，这样才能获取一致性的同步位点。那么问题来了，如果获取全局锁失败失败会怎么样？<br>
+​  想象一下，当获取全局锁失败的情况下，这个时候其他会话对数据库继续进行读写，此时，如果mydumper继续通过&quot;show master status&quot; 获取备份同步点，这个同步点肯定是不一致的，用这个备份来做备机建立主从关系，在日后的同步过程中必然会由于1032，1062之类的错误导致同步中断.</p>
 <h2 id="如果全局锁获取失败mydumper会怎么处理呢">如果全局锁获取失败，mydumper会怎么处理呢</h2>
-<p>p{ white-space:pre-wrap;}那么焦点问题就来了，如果全局锁获取失败，也就是由于某种原因“FLUSH TABLES WITH READ LOCK” 执行失败，mydumper后续会怎么做呢？让我们从代码中一探究竟。<br>
-p{ white-space:pre-wrap;}打开mydumper.c文件，备份的逻辑几乎全部在这个文件里, 重点关注start_dump这个函数<br>
+<p>  那么焦点问题就来了，如果全局锁获取失败，也就是由于某种原因“FLUSH TABLES WITH READ LOCK” 执行失败，mydumper后续会怎么做呢？让我们从代码中一探究竟。<br>
+  打开mydumper.c文件，备份的逻辑几乎全部在这个文件里, 重点关注start_dump这个函数<br>
 <img src="https://conanwang.github.io/post-images/1640081578895.jpg" alt="" loading="lazy"><br>
 这里我们重点看上图中的1，2，3，4这个4个标记的地方：</p>
 <ul>
@@ -47,11 +47,11 @@ p{ white-space:pre-wrap;}打开mydumper.c文件，备份的逻辑几乎全部在
 <li>标记3，errors变量值自增加1。</li>
 <li>标记4，我们先不要看标记4，这一行是我加的，官方的实现只有标记1，2，3。<br>
 从代码里我们明确了，即使获取不到全局锁，mydumper依然继续后续的备份动作，那errors这个变量自增1到底有啥用？<br>
-p{ white-space:pre-wrap;}让我们回到main主函数，可以看到在函数的结尾处，最后的程序执行状态码是根据errors来设置的，也就是说获取全局锁失败的唯一体现就是在程序执行完毕后查看$?的值才能体现出来，如果没有检查这个状态码，或者采用外部调用mydumper的方式来执行，没有关注这个状态码，那么，得到的数据备份集就基友可能是不一致的。<br>
+  让我们回到main主函数，可以看到在函数的结尾处，最后的程序执行状态码是根据errors来设置的，也就是说获取全局锁失败的唯一体现就是在程序执行完毕后查看$?的值才能体现出来，如果没有检查这个状态码，或者采用外部调用mydumper的方式来执行，没有关注这个状态码，那么，得到的数据备份集就基友可能是不一致的。<br>
 <img src="https://conanwang.github.io/post-images/1640082310897.jpg" alt="" loading="lazy"></li>
 </ul>
 <h2 id="如何改进">如何改进</h2>
-<p>p{ white-space:pre-wrap;}在我看来，避免这一情况，就是要显示的让备份失败，也就是不能生成看似正常的备份集，那么mydumper导出来的数据到底怎么样才是正常的备份集，myloader是怎么判断的呢？其实很简单，就是看备份目录里是否有metadata文件产生，如果备份不是正常结束，则产生的是类似，metadata.patiral这样的文件。于是，当获取不到全局锁，直接让程序退出，我觉得是最直接的办法，于是，有了之前标记4的代码。</p>
+<p>  在我看来，避免这一情况，就是要显示的让备份失败，也就是不能生成看似正常的备份集，那么mydumper导出来的数据到底怎么样才是正常的备份集，myloader是怎么判断的呢？其实很简单，就是看备份目录里是否有metadata文件产生，如果备份不是正常结束，则产生的是类似，metadata.patiral这样的文件。于是，当获取不到全局锁，直接让程序退出，我觉得是最直接的办法，于是，有了之前标记4的代码。</p>
 ]]></content>
     </entry>
     <entry>

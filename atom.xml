@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://conanwang.github.io</id>
     <title>小白修电脑</title>
-    <updated>2021-12-21T09:08:51.517Z</updated>
+    <updated>2021-12-21T09:30:09.076Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://conanwang.github.io"/>
     <link rel="self" href="https://conanwang.github.io/atom.xml"/>
@@ -11,12 +11,27 @@
     <icon>https://conanwang.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 小白修电脑</rights>
     <entry>
-        <title type="html"><![CDATA[mydumper源码学习系列]]></title>
+        <title type="html"><![CDATA[mydumper源码学习系列1-获取全局锁失败可能引起不一致的同步位点]]></title>
         <id>https://conanwang.github.io/post/ce-shi-wen-zhang/</id>
         <link href="https://conanwang.github.io/post/ce-shi-wen-zhang/">
         </link>
         <updated>2021-12-21T08:21:25.000Z</updated>
-        <content type="html"><![CDATA[<p>说的是对的</p>
+        <content type="html"><![CDATA[<p>mydumper源码学习系列1-获取ftwrl全局锁失败可能引起同步记录点不准</p>
+<h2 id="当前备份逻辑说明">当前备份逻辑说明</h2>
+<p>mydumper当前备份逻辑流程如下：</p>
+<p>![image-20211221172302121](/Users/wangdian/Library/Application Support/typora-user-images/image-20211221172302121.png)</p>
+<p><strong>主要步骤概括</strong></p>
+<ul>
+<li>主线程 FLUSH TABLES WITH READ LOCK, 施加全局只读锁，以阻止DML语句写入，保证数据的一致性</li>
+<li>读取当前时间点的二进制日志文件名和日志写入的位置并记录在metadata文件中，以供即使点恢复使用</li>
+<li>N个（线程数可以指定，默认是4）dump线程 START TRANSACTION WITH CONSISTENT SNAPSHOT; 开启读一致的事物</li>
+<li>dump non-InnoDB tables, 首先导出非事物引擎的表</li>
+<li>主线程 UNLOCK TABLES 非事物引擎备份完后，释放全局只读锁</li>
+<li>dump InnoDB tables, 基于事物导出InnoDB表</li>
+<li>事务结束</li>
+</ul>
+<p>##flush tables with read lock如果执行失败会怎么样？</p>
+<p>通过上述的备份步骤，我们可以知道，&quot; FLUSH TABLES WITH READ LOCK&quot; 获取全局只读锁是为了防止其他会话修改数据，这样才能获取一致性的同步位点。</p>
 ]]></content>
     </entry>
     <entry>

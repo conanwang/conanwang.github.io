@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://conanwang.github.io/favicon.ico?v=1640079001640">
+<link rel="shortcut icon" href="https://conanwang.github.io/favicon.ico?v=1640080088053">
 <link rel="stylesheet" href="https://conanwang.github.io/styles/main.css">
 
 
@@ -21,7 +21,10 @@
     <meta name="description" content="mydumper源码学习系列1-获取ftwrl全局锁失败可能引起同步记录点不准
 当前备份逻辑说明
 mydumper当前备份逻辑流程如下：
-![image-20211221172302121](/Users/wangdian/Library/..." />
+
+主要步骤概括
+
+主线程 FLUSH TABLES WITH READ LOCK, 施加全局只读锁，以..." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -31,7 +34,7 @@ mydumper当前备份逻辑流程如下：
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://conanwang.github.io">
-        <img src="https://conanwang.github.io/images/avatar.png?v=1640079001640" class="site-logo">
+        <img src="https://conanwang.github.io/images/avatar.png?v=1640080088053" class="site-logo">
         <h1 class="site-title">小白修电脑</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -99,9 +102,9 @@ mydumper当前备份逻辑流程如下：
             <div class="post-content" v-pre>
               <p>mydumper源码学习系列1-获取ftwrl全局锁失败可能引起同步记录点不准</p>
 <h2 id="当前备份逻辑说明">当前备份逻辑说明</h2>
-<p>mydumper当前备份逻辑流程如下：</p>
-<p>![image-20211221172302121](/Users/wangdian/Library/Application Support/typora-user-images/image-20211221172302121.png)</p>
-<p><strong>主要步骤概括</strong></p>
+<p>mydumper当前备份逻辑流程如下：<br>
+<img src="https://conanwang.github.io/post-images/1640080061444.png" alt="" loading="lazy"><br>
+<strong>主要步骤概括</strong></p>
 <ul>
 <li>主线程 FLUSH TABLES WITH READ LOCK, 施加全局只读锁，以阻止DML语句写入，保证数据的一致性</li>
 <li>读取当前时间点的二进制日志文件名和日志写入的位置并记录在metadata文件中，以供即使点恢复使用</li>

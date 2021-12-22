@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>myloader选项说明 | 全不栈工程师</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://conanwang.github.io/favicon.ico?v=1640156515385">
+<link rel="stylesheet" href="https://conanwang.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Application Options:
+-d, --directory                  待导入的数据
+-q, --queries-per-transaction     Number of queries per tra..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://conanwang.github.io">
+        <img src="https://conanwang.github.io/images/avatar.png?v=1640156515385" class="site-logo">
+        <h1 class="site-title">全不栈工程师</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      记录conan日常学习点滴
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://conanwang.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">myloader选项说明</h2>
+            <div class="post-date">2021-12-21</div>
+            
+            <div class="post-content" v-pre>
+              <p>Application Options:</p>
+<p>-d, --directory                  待导入的数据</p>
+<p>-q, --queries-per-transaction     Number of queries per transaction, default 1000</p>
+<p>-o, --overwrite-tables            Drop tables if they already exist</p>
+<p>-B, --database                    An alternative database to restore into</p>
+<p>-s, --source-db                   Database to restore</p>
+<p>-e, --enable-binlog               Enable binary logging of the restore data</p>
+<p>--innodb-optimize-keys            Creates the table without the indexes and it adds them at the end</p>
+<p>--set-names                       Sets the names, use it at your own risk, default binary</p>
+<p>-L, --logfile                     Log file name to use, by default stdout is used</p>
+<p>--purge-mode                      This specify the truncate mode which can be: NONE, DROP, TRUNCATE and DELETE</p>
+<p>--disable-redo-log                Disables the REDO_LOG and enables it after, doesn't check initial status</p>
+<p>-r, --rows                        Split the INSERT statement into this many rows.</p>
+<p>--max-threads-per-table           Maximum number of threads per table to use, default 4</p>
+<p>-h, --host                        The host to connect to</p>
+<p>-u, --user                        Username with the necessary privileges</p>
+<p>-p, --password                    User password</p>
+<p>-a, --ask-password                Prompt For User password</p>
+<p>-P, --port                        TCP/IP port to connect to</p>
+<p>-S, --socket                      UNIX domain socket file to use for connection</p>
+<p>-t, --threads                     Number of threads to use, default 4</p>
+<p>-C, --compress-protocol           Use compression on the MySQL connection</p>
+<p>-V, --version                     Show the program version and exit</p>
+<p>-v, --verbose                     Verbosity of output, 0 = silent, 1 = errors, 2 = warnings, 3 = info, default 2</p>
+<p>--defaults-file                   Use a specific defaults file</p>
+<p>--ssl                             Connect using SSL</p>
+<p>--ssl-mode                        Desired security state of the connection to the server: DISABLED, PREFERRED, REQUIRED, VERIFY_CA, VERIFY_IDENTITY</p>
+<p>--key                             The path name to the key file</p>
+<p>--cert                            The path name to the certificate file</p>
+<p>--ca                              The path name to the certificate authority file</p>
+<p>--capath                          The path name to a directory that contains trusted SSL CA certificates in PEM format</p>
+<p>--cipher                          A list of permissible ciphers to use for SSL encryption</p>
+<p>--tls-version                     Which protocols the server permits for encrypted connections</p>
+<p>--stream                          It will stream over STDOUT once the files has been written</p>
+<p>--no-delete                       It will not delete the files after stream has been completed</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://conanwang.github.io/post/ce-shi-wen-zhang/">
+                  <h3 class="post-title">
+                    mydumper源码学习系列1-获取全局锁失败可能引起不一致的同步位点
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

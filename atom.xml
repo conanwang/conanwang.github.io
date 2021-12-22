@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://conanwang.github.io</id>
-    <title>小白修电脑</title>
-    <updated>2021-12-21T10:49:35.040Z</updated>
+    <title>全不栈工程师</title>
+    <updated>2021-12-22T07:01:59.241Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://conanwang.github.io"/>
     <link rel="self" href="https://conanwang.github.io/atom.xml"/>
     <subtitle>记录conan日常学习点滴</subtitle>
     <logo>https://conanwang.github.io/images/avatar.png</logo>
     <icon>https://conanwang.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 小白修电脑</rights>
+    <rights>All rights reserved 2021, 全不栈工程师</rights>
+    <entry>
+        <title type="html"><![CDATA[myloader选项说明]]></title>
+        <id>https://conanwang.github.io/post/myloader-xuan-xiang-shuo-ming/</id>
+        <link href="https://conanwang.github.io/post/myloader-xuan-xiang-shuo-ming/">
+        </link>
+        <updated>2021-12-21T10:59:13.000Z</updated>
+        <content type="html"><![CDATA[<p>Application Options:</p>
+<p>-d, --directory                  待导入的数据</p>
+<p>-q, --queries-per-transaction     Number of queries per transaction, default 1000</p>
+<p>-o, --overwrite-tables            Drop tables if they already exist</p>
+<p>-B, --database                    An alternative database to restore into</p>
+<p>-s, --source-db                   Database to restore</p>
+<p>-e, --enable-binlog               Enable binary logging of the restore data</p>
+<p>--innodb-optimize-keys            Creates the table without the indexes and it adds them at the end</p>
+<p>--set-names                       Sets the names, use it at your own risk, default binary</p>
+<p>-L, --logfile                     Log file name to use, by default stdout is used</p>
+<p>--purge-mode                      This specify the truncate mode which can be: NONE, DROP, TRUNCATE and DELETE</p>
+<p>--disable-redo-log                Disables the REDO_LOG and enables it after, doesn't check initial status</p>
+<p>-r, --rows                        Split the INSERT statement into this many rows.</p>
+<p>--max-threads-per-table           Maximum number of threads per table to use, default 4</p>
+<p>-h, --host                        The host to connect to</p>
+<p>-u, --user                        Username with the necessary privileges</p>
+<p>-p, --password                    User password</p>
+<p>-a, --ask-password                Prompt For User password</p>
+<p>-P, --port                        TCP/IP port to connect to</p>
+<p>-S, --socket                      UNIX domain socket file to use for connection</p>
+<p>-t, --threads                     Number of threads to use, default 4</p>
+<p>-C, --compress-protocol           Use compression on the MySQL connection</p>
+<p>-V, --version                     Show the program version and exit</p>
+<p>-v, --verbose                     Verbosity of output, 0 = silent, 1 = errors, 2 = warnings, 3 = info, default 2</p>
+<p>--defaults-file                   Use a specific defaults file</p>
+<p>--ssl                             Connect using SSL</p>
+<p>--ssl-mode                        Desired security state of the connection to the server: DISABLED, PREFERRED, REQUIRED, VERIFY_CA, VERIFY_IDENTITY</p>
+<p>--key                             The path name to the key file</p>
+<p>--cert                            The path name to the certificate file</p>
+<p>--ca                              The path name to the certificate authority file</p>
+<p>--capath                          The path name to a directory that contains trusted SSL CA certificates in PEM format</p>
+<p>--cipher                          A list of permissible ciphers to use for SSL encryption</p>
+<p>--tls-version                     Which protocols the server permits for encrypted connections</p>
+<p>--stream                          It will stream over STDOUT once the files has been written</p>
+<p>--no-delete                       It will not delete the files after stream has been completed</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[mydumper源码学习系列1-获取全局锁失败可能引起不一致的同步位点]]></title>
         <id>https://conanwang.github.io/post/ce-shi-wen-zhang/</id>

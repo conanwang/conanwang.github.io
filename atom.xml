@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://conanwang.github.io</id>
     <title>全不栈工程师</title>
-    <updated>2021-12-23T06:47:15.486Z</updated>
+    <updated>2021-12-24T10:26:42.364Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://conanwang.github.io"/>
     <link rel="self" href="https://conanwang.github.io/atom.xml"/>
@@ -10,6 +10,35 @@
     <logo>https://conanwang.github.io/images/avatar.png</logo>
     <icon>https://conanwang.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 全不栈工程师</rights>
+    <entry>
+        <title type="html"><![CDATA[mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为]]></title>
+        <id>https://conanwang.github.io/post/mydumper-yuan-ma-xue-xi-xi-lie-2-xiu-gai-myloader-dao-ru-guo-cheng-mo-ren-guan-bi-binlog-xie-ru-de-xing-wei/</id>
+        <link href="https://conanwang.github.io/post/mydumper-yuan-ma-xue-xi-xi-lie-2-xiu-gai-myloader-dao-ru-guo-cheng-mo-ren-guan-bi-binlog-xie-ru-de-xing-wei/">
+        </link>
+        <updated>2021-12-24T10:23:45.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为">mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为</h1>
+<h2 id="前言">前言</h2>
+<p>​    小伙伴在使用myloader导入数据的过程中，不知是否遇到过这样的情况，在主db导入数据后，主db上数据查看导入正常，但是备机上啥数据都没有，很多初次使用myloader的同学可能都遇到过这样的问题，那么原因是啥呢？</p>
+<h2 id="myloader导入数据中默认采取的一些行为">myloader导入数据中默认采取的一些行为</h2>
+<p>​    由于主从关系的mysql备机数据来自于主db的binlog增量更新，那么由此联想到是不是myloader在导入数据过程中，关闭了主db的binlog写入呢，让我们从这个角度来看看myloder的参数中是否有此类相关的选项，果然，注意看红框处<br>
+![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224173755812.png)</p>
+<p>这个--enble-binlog注释说的很清楚了，允许在恢复数据时，打开binlog写入功能，那么如果不带这个参数，默认情况下，是不是就关闭了binlog写入功能呢，从下面代码看，是的，不带这个选项的话，默认值是0.</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224175653845.png)</p>
+<p>注意看enable_binlog不同值的行为，在0值的时候，我们看到，myloader会执行这样的sql</p>
+<pre><code class="language-sql">set SQL_LOG_BIN=0
+</code></pre>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224180234891.png)</p>
+<h2 id="myloader为啥这么设计">myloader为啥这么设计</h2>
+<p>​    其实我个人不理解myloader为啥这么设计，使用mysql几乎都是以主从形式，这也是mysql当初能迅速流行的原因之一，而默认行为就是关闭binlog写入，那么每次恢复数据的时候，备机的数据肯定会不一致，新人很容易遗漏这个参数，而老手每次带上这个参数其实感觉也是多次一举。</p>
+<h2 id="改变默认行为">改变默认行为</h2>
+<p>​    那么我们其实可以改变这个默认行为，默认是打开binlog写入，如果有需要，带上参数，关闭binlog写入，这样似乎在更符合我们的思考习惯。</p>
+<p>​    改动其实也不大，首先修改enable_binlog名称为disable_binlog,默认值修位0，也就是默认是打开binlog写入</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224181129649.png)</p>
+<p>当disable_binlog为真时，也就是带上参数，值为1时候，执行关闭binlog语句</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224181431936.png)</p>
+<p>最终效果如下，这样，就不用担心忘记带上这个参数导致备机数据不一致了</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[myloader选项说明]]></title>
         <id>https://conanwang.github.io/post/myloader-xuan-xiang-shuo-ming/</id>

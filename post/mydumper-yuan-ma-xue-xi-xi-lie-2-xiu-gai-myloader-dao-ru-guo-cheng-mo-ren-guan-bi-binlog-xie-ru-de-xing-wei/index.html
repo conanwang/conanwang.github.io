@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为 | 全不栈工程师</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://conanwang.github.io/favicon.ico?v=1640341586291">
+<link rel="stylesheet" href="https://conanwang.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为
+前言
+​    小伙伴在使用myloader导入数据的过程中，不知是否遇到过这样的情况，在主db导入数据后，主db上数据查看导入正常，但是备机上啥数..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://conanwang.github.io">
+        <img src="https://conanwang.github.io/images/avatar.png?v=1640341586291" class="site-logo">
+        <h1 class="site-title">全不栈工程师</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      记录conan日常学习点滴
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://conanwang.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为</h2>
+            <div class="post-date">2021-12-24</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为">mydumper源码学习系列2-修改myloader导入过程默认关闭binlog写入的行为</h1>
+<h2 id="前言">前言</h2>
+<p>​    小伙伴在使用myloader导入数据的过程中，不知是否遇到过这样的情况，在主db导入数据后，主db上数据查看导入正常，但是备机上啥数据都没有，很多初次使用myloader的同学可能都遇到过这样的问题，那么原因是啥呢？</p>
+<h2 id="myloader导入数据中默认采取的一些行为">myloader导入数据中默认采取的一些行为</h2>
+<p>​    由于主从关系的mysql备机数据来自于主db的binlog增量更新，那么由此联想到是不是myloader在导入数据过程中，关闭了主db的binlog写入呢，让我们从这个角度来看看myloder的参数中是否有此类相关的选项，果然，注意看红框处<br>
+![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224173755812.png)</p>
+<p>这个--enble-binlog注释说的很清楚了，允许在恢复数据时，打开binlog写入功能，那么如果不带这个参数，默认情况下，是不是就关闭了binlog写入功能呢，从下面代码看，是的，不带这个选项的话，默认值是0.</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224175653845.png)</p>
+<p>注意看enable_binlog不同值的行为，在0值的时候，我们看到，myloader会执行这样的sql</p>
+<pre><code class="language-sql">set SQL_LOG_BIN=0
+</code></pre>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224180234891.png)</p>
+<h2 id="myloader为啥这么设计">myloader为啥这么设计</h2>
+<p>​    其实我个人不理解myloader为啥这么设计，使用mysql几乎都是以主从形式，这也是mysql当初能迅速流行的原因之一，而默认行为就是关闭binlog写入，那么每次恢复数据的时候，备机的数据肯定会不一致，新人很容易遗漏这个参数，而老手每次带上这个参数其实感觉也是多次一举。</p>
+<h2 id="改变默认行为">改变默认行为</h2>
+<p>​    那么我们其实可以改变这个默认行为，默认是打开binlog写入，如果有需要，带上参数，关闭binlog写入，这样似乎在更符合我们的思考习惯。</p>
+<p>​    改动其实也不大，首先修改enable_binlog名称为disable_binlog,默认值修位0，也就是默认是打开binlog写入</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224181129649.png)</p>
+<p>当disable_binlog为真时，也就是带上参数，值为1时候，执行关闭binlog语句</p>
+<p>![](file:///Users/wangdian/Library/Application Support/typora-user-images/image-20211224181431936.png)</p>
+<p>最终效果如下，这样，就不用担心忘记带上这个参数导致备机数据不一致了</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://conanwang.github.io/post/myloader-xuan-xiang-shuo-ming/">
+                  <h3 class="post-title">
+                    myloader选项说明
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
